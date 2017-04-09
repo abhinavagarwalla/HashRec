@@ -3,8 +3,8 @@ import preprocessor as p
 import pickle
 import spacy 
 
-def load_train_data(filename):
-	return np.load('../data/train/'+filename)
+def load_train_data(file_emb, file_tag):
+	return np.load('../data/'+file_emb), np.load('../data/'+file_tag)
 
 def load_val_data(filename):
 	return np.load('../data/val/'+filename)
@@ -23,13 +23,14 @@ def extract_tags_tweets(filename):
 
 	tags = []
 	tweets = []
-	for i in range(len(f)):
+	for i in range(100000):#len(f)):
 		#print f[i]
 		try:
 			tags.append([k.match for k in p.parse(f[i]).hashtags])
 			tweets.append(p.clean(f[i]))
 		except:
 			pass
+	filename = filename[:-3].split('/')[-1]
 	np.save("../data/tags_"+filename+'npy', tags)
 	np.save("../data/tweet_txt_"+filename+'npy', tweets)
 	return np.asarray(tags), np.asarray(tweets)
@@ -41,8 +42,11 @@ def save_emb(tweets, filename):
 	for i in tweets:
 		words = i.split()
 		emb.append([nlp(w).vector for w in words])
-	np.save("../data/"+filename+'npy', emb)
+	filename = filename.split('/')[-1]
+	np.save("../data/emb_"+filename+'npy', emb)
 
 filename = '../data/tweets2009-06.txt'
+#dat = open(filename, 'r')
+#print dat.ix[:6]
 tags, tweets = extract_tags_tweets(filename)
 save_emb(tweets, filename[:-3])
