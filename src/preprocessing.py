@@ -6,7 +6,7 @@ import spacy
 def load_train_data(file_emb, file_tag):
 	fp = open(file_tag).readlines()
 	fp = [i.strip('\r\n').split(',') for i in fp]
-	return np.load('../data/'+file_emb), fp 
+	return np.load(file_emb)[:200000], fp[:200000] 
 
 def load_val_data(filename):
 	return np.load('../data/val/'+filename)
