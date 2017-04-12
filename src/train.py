@@ -13,9 +13,9 @@ maxlen = 30
 batch_size = 64
 wordvec_size = 300
 hidden_states = 100
-nb_epoch = 10
+nb_epoch = 50
 
-X_train, y_train = load_train_data('../data/emb_LSTM_train_tweets_cleaned.npy', '../data/LSTM_train_hashtags_cleaned.npy')
+X_train, y_train = load_train_data('../data/LSTM_train_tweets_cleaned_10k.npy', '../data/LSTM_train_hashtags_cleaned_10k.npy')
 #X_val, y_val = load_val_data()
 #X_test, y_test = load_test_data()
 
@@ -39,12 +39,13 @@ def build_model():
 	model.add(Dense(output_tags))
 	model.add(Activation('softmax'))
 
-	model.compile(loss='categorical_crossentropy', optimizer='rmsprop', metrics=['accuracy'])#, 'precision', 'recall', 'fmeasure'])
+	model.compile(loss='categorical_crossentropy', optimizer='adadelta', metrics=['accuracy'])#, 'precision', 'recall', 'fmeasure'])
 	print model.summary()
 	return model
 
 def train():
 	model = build_model()
+	model.load_weights('simple_model.h5')
 	print "Fitting model.."
 	model.fit(X_train, y_train, batch_size=batch_size, nb_epoch=nb_epoch, validation_data=(X_val, y_val), verbose=2)
 	# print model.predict(X_train)
@@ -61,3 +62,9 @@ def train():
 	'''
 
 train()
+
+def eval():
+	model = build_model()
+	model.load_weights('simple_model.h5')
+	X, y = 
+	print model.evaluate(X, y, batch_size=batch_size)

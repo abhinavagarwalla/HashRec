@@ -50,22 +50,22 @@ def save_emb(filename):
 	filename = filename.split('/')[-1]
 	np.save("../data/emb_"+filename[:-3]+'npy', emb)
 
-filename = '../data/LSTM_train_tweets_cleaned.npy'
+filename = '../data/LSTM_test_tweets_cleaned_10k.npy'
 #dat = open(filename, 'r')
 #print dat.ix[:6]
 # tags, tweets = extract_tags_tweets(filename)
 
-# save_emb(filename)
+save_emb(filename)
 
-filetw = '../data/LSTM_train_tweets.txt'
-fileha = '../data/LSTM_train_hashtags.txt'
+filetw = '../data/LSTM_test_tweets.txt'
+fileha = '../data/LSTM_test_hashtags.txt'
 
 def getfreq(tw, ha):
 	trh = open(ha).readlines()
 	trh = [i.strip().split(',') for i in trh]
 	trt = open(tw).readlines()
 	trt = [i.strip() for i in trt]
-	freq = np.load('../data/Freq_Tweets.npy')
+	freq = np.load('../data/Freq_Tweets_10k.npy')
 
 	trtclean, trhclean = [], []
 	for i in range(len(trh)):
@@ -88,7 +88,7 @@ def getfreq(tw, ha):
 	trtclean = np.asarray(trtclean)
 	trhclean = np.asarray(trhclean)
 	print trtclean.shape, trhclean.shape
-	np.save('../data/LSTM_train_tweets_cleaned', trtclean)
-	np.save('../data/LSTM_train_hashtags_cleaned', trhclean)
+	np.save('../data/LSTM_test_tweets_cleaned_10k', trtclean)
+	np.save('../data/LSTM_test_hashtags_cleaned_10k', trhclean)
 
 # getfreq(filetw, fileha)

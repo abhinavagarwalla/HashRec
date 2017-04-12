@@ -14,17 +14,30 @@ batch_size = 64
 wordvec_size = 300
 hidden_states = 100
 nb_epoch = 10
-max_features = 141926 # if 450000
+max_features = 108607 # if 450000
 
-def load_train_txt_data(file_tw, file_tag):
-	fp = open(file_tag).readlines()
-	fp = [i.strip('\r\n').split(',') for i in fp]
+# def load_train_txt_data(file_tw, file_tag):
+# 	fp = open(file_tag).readlines()
+# 	fp = [i.strip('\r\n').split(',') for i in fp]
 
-	fptw = open(file_tw).readlines()
-	fptw = [i.strip('\r\n').split(' ') for i in fptw]
-	return fptw, fp
+# 	fptw = open(file_tw).readlines()
+# 	fptw = [i.strip('\r\n').split(' ') for i in fptw]
+# 	return fptw, fp
 
-X_train, y_train = load_train_txt_data('../data/LSTM_train_tweets.txt', '../data/LSTM_train_hashtags.txt')
+def load_transform(file_tw, file_tag):
+	td = np.load('../data/tweet_dict.npy')
+	tw = np.load(file_tw)
+	tag = np.load(file_tag)
+
+	tw = [i.split(' ') for i in tw]
+	for i in range(len(tw)):
+		for j in range(len(tw[i])):
+			tw[i][j] = np.where(td==tw[i][j])[0][0]
+	np.save('../data/transformed_tweets', tw)
+	exit()
+	return tw, tag
+
+X_train, y_train = load_transform('../data/LSTM_train_tweets_cleaned_10k.npy', '../data/LSTM_train_hashtags_cleaned_10k.npy')
 #X_val, y_val = load_val_data()
 #X_test, y_test = load_test_data()
 
