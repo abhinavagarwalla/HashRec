@@ -14,8 +14,17 @@ batch_size = 64
 wordvec_size = 300
 hidden_states = 100
 nb_epoch = 10
+max_features = 141926 # if 450000
 
-X_train, y_train = load_train_data('../data/emb_LSTM_train_tweets_cleaned.npy', '../data/LSTM_train_hashtags_cleaned.npy')
+def load_train_txt_data(file_tw, file_tag):
+	fp = open(file_tag).readlines()
+	fp = [i.strip('\r\n').split(',') for i in fp]
+
+	fptw = open(file_tw).readlines()
+	fptw = [i.strip('\r\n').split(' ') for i in fptw]
+	return fptw, fp
+
+X_train, y_train = load_train_txt_data('../data/LSTM_train_tweets.txt', '../data/LSTM_train_hashtags.txt')
 #X_val, y_val = load_val_data()
 #X_test, y_test = load_test_data()
 
@@ -29,12 +38,13 @@ lb.fit(y_train)
 y_train = lb.transform(y_train)
 output_tags = len(lb.classes_)
 
-X_val, y_val = X_train[:100], y_train[:100]
-X_test, y_test = X_train[:100], y_train[:100]
+X_val, y_val = X_train, y_train
+X_test, y_test = X_train, y_train
 #exit()
 
 def build_model():
 	model = Sequential()
+	model.add(Embedding(max_features, hidden_states))
 	model.add(LSTM(hidden_states, return_sequences=False, input_shape=(maxlen, wordvec_size)))
 	model.add(Dense(output_tags))
 	model.add(Activation('softmax'))
@@ -49,7 +59,7 @@ def train():
 	model.fit(X_train, y_train, batch_size=batch_size, nb_epoch=nb_epoch, validation_data=(X_val, y_val), verbose=2)
 	# print model.predict(X_train)
 	print model.evaluate(X_test, y_test, batch_size=batch_size)
-	model.save_weights('simple_model.h5')
+	model.save_weights('simple_model_emb.h5')
 	'''
 	score, acc, pr, re, fm = model.evaluate(X_test, y_test, batch_size=batch_size)
 	print "Model Performance Measures: "

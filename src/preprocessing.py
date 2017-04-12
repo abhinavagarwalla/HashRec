@@ -4,9 +4,9 @@ import pickle
 import spacy 
 
 def load_train_data(file_emb, file_tag):
-	fp = open(file_tag).readlines()
-	fp = [i.strip('\r\n').split(',') for i in fp]
-	return np.load(file_emb), fp 
+	# fp = open(file_tag).readlines()
+	# fp = [i.strip('\r\n').split(',') for i in fp]
+	return np.load(file_emb), np.load(file_tag) 
 
 def load_val_data(filename):
 	return np.load('../data/val/'+filename)
@@ -45,8 +45,8 @@ def save_emb(filename):
 	emb = []
 	nlp = spacy.en.English()
 	for i in tweets:
-		words = i.split()
-		emb.append([nlp(w.decode('utf-8')).vector for w in words])
+		print i
+		emb.append([nlp(w.decode('utf-8')).vector for w in i.split()])
 	filename = filename.split('/')[-1]
 	np.save("../data/emb_"+filename[:-3]+'npy', emb)
 
@@ -55,7 +55,7 @@ filename = '../data/LSTM_train_tweets_cleaned.npy'
 #print dat.ix[:6]
 # tags, tweets = extract_tags_tweets(filename)
 
-save_emb(filename)
+# save_emb(filename)
 
 filetw = '../data/LSTM_train_tweets.txt'
 fileha = '../data/LSTM_train_hashtags.txt'
