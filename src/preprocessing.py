@@ -6,7 +6,7 @@ import spacy
 def load_train_data(file_emb, file_tag):
 	fp = open(file_tag).readlines()
 	fp = [i.strip('\r\n').split(',') for i in fp]
-	return np.load('../data/'+file_emb), fp 
+	return np.load(file_emb), fp 
 
 def load_val_data(filename):
 	return np.load('../data/val/'+filename)
@@ -38,20 +38,57 @@ def load_test_data(filename):
 # 	return np.asarray(tags), np.asarray(tweets)
 
 def save_emb(filename):
-	tweets = open(filename).readlines()
-	tweets = [i.split('\r\n')[0].decode('utf-8') for i in tweets]
+	# tweets = open(filename).readlines()
+	# tweets = [i.split('\r\n')[0].decode('utf-8') for i in tweets]
+	tweets = np.load(filename)
 	print "Saving embeddings.."
 	emb = []
 	nlp = spacy.en.English()
 	for i in tweets:
 		words = i.split()
-		emb.append([nlp(w).vector for w in words])
+		emb.append([nlp(w.decode('utf-8')).vector for w in words])
 	filename = filename.split('/')[-1]
 	np.save("../data/emb_"+filename[:-3]+'npy', emb)
 
-filename = '../data/LSTM_train_tweets.txt'
+filename = '../data/LSTM_train_tweets_cleaned.npy'
 #dat = open(filename, 'r')
 #print dat.ix[:6]
 # tags, tweets = extract_tags_tweets(filename)
 
-# save_emb(filename)
+save_emb(filename)
+
+filetw = '../data/LSTM_train_tweets.txt'
+fileha = '../data/LSTM_train_hashtags.txt'
+
+def getfreq(tw, ha):
+	trh = open(ha).readlines()
+	trh = [i.strip().split(',') for i in trh]
+	trt = open(tw).readlines()
+	trt = [i.strip() for i in trt]
+	freq = np.load('../data/Freq_Tweets.npy')
+
+	trtclean, trhclean = [], []
+	for i in range(len(trh)):
+		print len(trh[i])
+		flag = False
+		if len(trh[i]) > 1:
+			for j in range(len(trh[i])):
+				if trh[i][j] not in freq:
+					flag = True
+					break
+			if not flag:
+				trtclean.append(trt[i])
+				trhclean.append(trh[i])
+			flag = False
+		else:
+			if trh[i] in freq:
+				# print "Yes2"
+				trtclean.append(trt[i])
+				trhclean.append(trh[i])
+	trtclean = np.asarray(trtclean)
+	trhclean = np.asarray(trhclean)
+	print trtclean.shape, trhclean.shape
+	np.save('../data/LSTM_train_tweets_cleaned', trtclean)
+	np.save('../data/LSTM_train_hashtags_cleaned', trhclean)
+
+# getfreq(filetw, fileha)
