@@ -16,14 +16,6 @@ hidden_states = 100
 nb_epoch = 10
 max_features = 108607 # if 450000
 
-# def load_train_txt_data(file_tw, file_tag):
-# 	fp = open(file_tag).readlines()
-# 	fp = [i.strip('\r\n').split(',') for i in fp]
-
-# 	fptw = open(file_tw).readlines()
-# 	fptw = [i.strip('\r\n').split(' ') for i in fptw]
-# 	return fptw, fp
-
 def load_transform(file_tw, file_tag):
 	td = np.load('../data/tweet_dict.npy')
 	tw = np.load(file_tw)
@@ -53,7 +45,6 @@ output_tags = len(lb.classes_)
 
 X_val, y_val = X_train, y_train
 X_test, y_test = X_train, y_train
-#exit()
 
 def build_model():
 	model = Sequential()
@@ -62,7 +53,7 @@ def build_model():
 	model.add(Dense(output_tags))
 	model.add(Activation('softmax'))
 
-	model.compile(loss='categorical_crossentropy', optimizer='rmsprop', metrics=['accuracy'])#, 'precision', 'recall', 'fmeasure'])
+	model.compile(loss='categorical_crossentropy', optimizer='rmsprop', metrics=['accuracy'])
 	print model.summary()
 	return model
 
@@ -73,14 +64,5 @@ def train():
 	# print model.predict(X_train)
 	print model.evaluate(X_test, y_test, batch_size=batch_size)
 	model.save_weights('simple_model_emb.h5')
-	'''
-	score, acc, pr, re, fm = model.evaluate(X_test, y_test, batch_size=batch_size)
-	print "Model Performance Measures: "
-	print "Loss: ", score
-	print "Accuracy: ", acc
-	print "Precision: ", pr
-	print "Recall: ", re
-	print "F1: ", fm
-	'''
 
 train()

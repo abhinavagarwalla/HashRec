@@ -1,10 +1,3 @@
-# -*- coding: utf-8 -*-
-"""
-Created on Wed Mar 15 20:53:49 2017
-
-@author: lenovo.
-"""
-
 from langdetect import detect
 import py2casefold as p2c
 import preprocessor as p
@@ -83,9 +76,9 @@ for line in file1:
 
 ##read a file and break into a smaller chunk###
 #==============================================================================
-# file1=open("E:/tweets2009-06.txt","r")
+# file1=open("tweets2009-06.txt","r")
 # data=''.join([next(file1) for x in xrange(4000)])
-# file2=open("E:/sample.txt","w")
+# file2=open("sample.txt","w")
 # file2.write(data)
 # file2.close()
 #==============================================================================
