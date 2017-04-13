@@ -15,7 +15,7 @@ wordvec_size = 300
 hidden_states = 100
 nb_epoch = 50
 
-X_train, y_train = load_train_data('../data/LSTM_train_tweets_cleaned_10k.npy', '../data/LSTM_train_hashtags_cleaned_10k.npy')
+X_train, y_train = load_train_data('../data/emb_LSTM_train_tweets_cleaned_10k.npy', '../data/LSTM_train_hashtags_cleaned_10k.npy')
 #X_val, y_val = load_val_data()
 #X_test, y_test = load_test_data()
 
@@ -61,10 +61,13 @@ def train():
 	print "F1: ", fm
 	'''
 
-train()
-
-def eval():
+def evalu():
 	model = build_model()
 	model.load_weights('simple_model.h5')
-	X, y = 
+	X, y = load_train_data('../data/emb_LSTM_test_tweets_cleaned_10k.npy', '../data/LSTM_test_hashtags_cleaned_10k.npy')
+	X = sequence.pad_sequences(X, maxlen=maxlen)
+	y = lb.transform(y)
 	print model.evaluate(X, y, batch_size=batch_size)
+
+train()
+# evalu()

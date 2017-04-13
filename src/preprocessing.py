@@ -55,7 +55,7 @@ filename = '../data/LSTM_test_tweets_cleaned_10k.npy'
 #print dat.ix[:6]
 # tags, tweets = extract_tags_tweets(filename)
 
-save_emb(filename)
+# save_emb(filename)
 
 filetw = '../data/LSTM_test_tweets.txt'
 fileha = '../data/LSTM_test_hashtags.txt'
