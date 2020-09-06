@@ -20,6 +20,7 @@ batch_size = 64
 wordvec_size = 300
 hidden_states = 100
 nb_epoch = 10
+load = False
 
 X_train, y_train = load_train_data('../data/emb_LSTM_train_tweets_cleaned_10k.npy', '../data/LSTM_train_hashtags_cleaned_10k.npy')
 X_LDA = np.load('../data/resultset1.npy')[:10000]
@@ -117,7 +118,8 @@ def build_model():
 
 def train():
     model = build_model()
-    model.load_weights('simple_model_att_LDA.h5')
+    if load:
+        model.load_weights('simple_model_att_LDA.h5')
     print "Fitting model.."
     model.fit([X_train, X_LDA], y_train, batch_size=batch_size, nb_epoch=nb_epoch, validation_data=([X_val, X_val_LDA], y_val), verbose=2)
     # print model.predict(X_train)
@@ -135,7 +137,6 @@ def evalu():
     print "Model Performance Measures: "
     print "Loss: ", log_loss(y_true, y_pred)
     ytmp = np.zeros((y_pred.shape[0], y_pred.shape[1]))
-    # y_pred = y_pred.argmax(axis=1)
     for i in range(len(ytmp)):
         ytmp[i, y_pred[i].argmax()] = 1
     y_pred = ytmp
@@ -144,5 +145,5 @@ def evalu():
     print "Recall: ", recall_score(y_true, y_pred, average='micro')
     print "F1: ", f1_score(y_true, y_pred, average='micro')
 
-# train()
+train()
 # evalu()

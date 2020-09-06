@@ -15,6 +15,7 @@ batch_size = 64
 wordvec_size = 300
 hidden_states = 100
 nb_epoch = 35
+load = False
 
 X_train, y_train = load_train_data('../data/emb_LSTM_train_tweets_cleaned_10k.npy', '../data/LSTM_train_hashtags_cleaned_10k.npy')
 X_train = sequence.pad_sequences(X_train, maxlen=maxlen)
@@ -33,14 +34,15 @@ def build_model():
 	model.add(LSTM(hidden_states, return_sequences=False, input_shape=(maxlen, wordvec_size)))
 	model.add(Dense(output_tags))
 	model.add(Activation('softmax'))
-	
+
 	model.compile(loss='categorical_crossentropy', optimizer='adam', metrics=['accuracy'])
 	print model.summary()
 	return model
 
 def train():
 	model = build_model()
-	model.load_weights('simple_model.h5')
+	if load:
+    	model.load_weights('simple_model.h5')
 	print "Fitting model.."
 	model.fit(X_train, y_train, batch_size=batch_size, nb_epoch=nb_epoch, validation_data=(X_val, y_val), verbose=2)
 	# print model.predict(X_train)
@@ -66,5 +68,5 @@ def evalu():
     print "Recall: ", recall_score(y_true, y_pred, average='micro')
     print "F1: ", f1_score(y_true, y_pred, average='micro')
 
-# train()
+train()
 # evalu()
